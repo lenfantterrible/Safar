@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from uuslug import uuslug 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -30,10 +30,10 @@ class Agency(models.Model):
     ]
 
     name = models.CharField(max_length=35)
-    phone = PhoneNumberField(_(""))
-    email = models.EmailField(_(""), max_length=50)
-    slug = models.CharField(max_length=200, blank=True)
-    logo = models.ImageField(upload_to='logos/', default='logos/download.jpeg')
+    slug = models.CharField(max_length=200, blank=True, unique=True)
+    phone = PhoneNumberField(_("Phone Number"))
+    email = models.EmailField(_("Email"), max_length=50)
+    logo = models.ImageField(upload_to='logos/', default='logos/default.jpeg')
     type = models.CharField(
         max_length=2,
         choices=TYPE_CHOICES,
@@ -45,6 +45,7 @@ class Agency(models.Model):
 
     def __str__(self):
         return self.name
+
 
     def get_absolute_url(self):
         return reverse("ticket:agency", kwargs={"slug": self.slug})
@@ -62,8 +63,8 @@ class Ticket(models.Model):
     capacity = models.PositiveIntegerField(_("Capacity"))
     origin = models.ForeignKey(City, verbose_name=_("Origin"), related_name="%(class)s_origins", on_delete=models.CASCADE)
     destination = models.ForeignKey(City, verbose_name=_("Destination"), related_name="%(class)s_destinations", on_delete=models.CASCADE)
-    starts = models.DateTimeField(_("Starts"))
-    arrives = models.DateTimeField(_("Arrives"))
+    starts = models.DateTimeField(_("Starts at"))
+    arrives = models.DateTimeField(_("Arrives at"))
     
     class Meta:
         abstract = True
