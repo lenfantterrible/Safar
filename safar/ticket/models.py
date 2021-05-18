@@ -7,7 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class City(models.Model):
 
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=20, unique=True, primary_key=True)
 
 
     class Meta:
@@ -90,6 +90,7 @@ class Flight(Ticket):
         choices=CLASS_CHOICES,
     )
 
+    plane_model = models.CharField(_("Plane Model"), max_length=20)
 
     class Meta:
 
@@ -127,10 +128,12 @@ class Bus(Ticket):
 
 
 
-class Train(models.Model):
+class Train(Ticket):
 
     train_type = models.CharField(_("Train Type"), max_length=20)
+    # middle_ways = models.ManyToManyField("ticket.MiddleWayStation", verbose_name=_("Middle Way Stations"))
 
+    
     class Meta:
         verbose_name = _("Train")
         verbose_name_plural = _("Trains")
@@ -140,18 +143,17 @@ class Train(models.Model):
         return reverse("ticket:train_detail", kwargs={"id": self.id})
 
 
-class MiddleWayStaion(models.Model):
+# class MiddleWayStation(models.Model):
 
-    city = models.ForeignKey(City, verbose_name=_("City"), on_delete=models.CASCADE)
-    train = models.ForeignKey(Train, verbose_name=_(""), related_name="middle_ways", on_delete=models.CASCADE)
+#     city = models.ForeignKey(City, verbose_name=_("City"), on_delete=models.CASCADE)
+#     time = models.DateTimeField(_("Time"))
+
+#     class Meta:
+#         verbose_name = _("MiddleWayStaion")
+#         verbose_name_plural = _("MiddleWayStaions")
 
 
-    class Meta:
-        verbose_name = _("MiddleWayStaion")
-        verbose_name_plural = _("MiddleWayStaions")
-
-
-    def get_absolute_url(self):
-        return reverse("MiddleWayStaion_detail", kwargs={"pk": self.pk})
+#     def get_absolute_url(self):
+#         return reverse("MiddleWayStaion_detail", kwargs={"pk": self.pk})
 
 
